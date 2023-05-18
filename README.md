@@ -1,6 +1,6 @@
-# SmartGridz application
+# Sample application
 
-This repository holds the smartgridz spring boot application.  This is a Linux based application that requires a MySQL backend. 
+This repository holds the sample spring boot application.  This is a Linux based application that requires a MySQL backend. 
 
 ## Requirements
 
