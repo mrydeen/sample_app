@@ -21,7 +21,7 @@ public enum RoleType {
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleType.class);
 
-    private String springAuthType;
+    private final String springAuthType;
     RoleType(String springAuthType) {
         this.springAuthType = springAuthType;
     }

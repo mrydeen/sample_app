@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
     public CustomUserDetailsService(UserDao userDao) {
         this.userDao = userDao;
@@ -35,13 +35,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userDao.findByUserName(userName);
+        User user = userDao.findByLogin(userName);
         LOG.error("Finding user by userName: {}", userName);
         if (user != null) {
             LOG.error("User not null.: {}", user.toString());
             List<Role> roleList = new ArrayList<Role>();
             roleList.add(user.getRole());
-            return new org.springframework.security.core.userdetails.User(user.getUserName(),
+            return new org.springframework.security.core.userdetails.User(user.getLogin(),
                     user.getPassword(),
                     mapRoleToAuthorities(roleList));
         }else{

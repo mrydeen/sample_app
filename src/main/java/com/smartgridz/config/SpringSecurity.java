@@ -38,6 +38,8 @@ public class SpringSecurity {
                         authorize.requestMatchers("/register/**").hasRole("ADMIN")
                                 .requestMatchers("/config_email/**").hasRole("ADMIN")
                                 .requestMatchers("/users").hasRole("ADMIN")
+                                .requestMatchers("/files/**").hasRole("ADMIN")
+                                .requestMatchers("/files_add").hasRole("ADMIN")
                                 .requestMatchers("/forgot_password/**").permitAll()
                                 .requestMatchers("/reset_password/**").permitAll()
                                 .requestMatchers("/message/**").permitAll()

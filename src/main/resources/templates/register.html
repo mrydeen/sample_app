@@ -19,11 +19,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" th:href="@{/config_email}">Email Configuration</a>
-        </li>
+
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/files_add}">Add File</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/files}">Files</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/config_email}">Email Configuration</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
@@ -52,6 +59,21 @@
             th:object="${user}"
           >
             <div class="form-group mb-3">
+              <label class="form-label">Login</label>
+              <input
+                      class="form-control"
+                      id="login"
+                      name="login"
+                      placeholder="Enter login"
+                      th:field="*{login}"
+                      type="text"
+                      required
+              />
+              <p th:errors = "*{login}" class="text-danger"
+              th:if="${#fields.hasErrors('login')}"></p>
+            </div>
+
+            <div class="form-group mb-3">
               <label class="form-label">User Name</label>
               <input
                       class="form-control"
@@ -61,40 +83,9 @@
                       th:field="*{userName}"
                       type="text"
                       required
-                      autofocus
               />
               <p th:errors = "*{userName}" class="text-danger"
                  th:if="${#fields.hasErrors('userName')}"></p>
-            </div>
-
-            <div class="form-group mb-3">
-              <label class="form-label">First Name</label>
-              <input
-                      class="form-control"
-                      id="firstName"
-                      name="firstName"
-                      placeholder="Enter first name"
-                      th:field="*{firstName}"
-                      type="text"
-                      required
-              />
-              <p th:errors = "*{firstName}" class="text-danger"
-              th:if="${#fields.hasErrors('firstName')}"></p>
-            </div>
-
-            <div class="form-group mb-3">
-              <label class="form-label">Last Name</label>
-              <input
-                      class="form-control"
-                      id="lastName"
-                      name="lastName"
-                      placeholder="Enter last name"
-                      th:field="*{lastName}"
-                      type="text"
-                      required
-              />
-              <p th:errors = "*{lastName}" class="text-danger"
-                 th:if="${#fields.hasErrors('lastName')}"></p>
             </div>
 
             <div class="form-group mb-3">

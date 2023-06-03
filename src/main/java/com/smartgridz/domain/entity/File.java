@@ -1,10 +1,10 @@
 package com.smartgridz.domain.entity;
 
+import com.smartgridz.controller.dto.FileDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Date;
 
 /**
  * This class represents a file that has been imported into this application.
@@ -14,8 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="file_type")
 @Table(name="files")
-public class File
+public abstract class File
 {
     private static final long serialVersionUID = 1L;
 
@@ -23,35 +25,71 @@ public class File
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", nullable=false)
-    private String name;
+    @Column(name="filename", nullable=false)
+    private String filename;
 
-    @Column(nullable=false)
-    private String location;
+    // Keeping pathname because we may want to archive to a new root.
+    @Column(name="pathname")
+    private String pathname;
 
-    @Column(nullable=false)
+    @Column(name="description")
     private String description;
 
-    @Column(name="transfer_date", nullable=false)
-    private String transferDate;
+    /**
+     * JPA needs a discriminator to identify the subclass, in this case file_type.  file_type is autofilled by JPA,
+     * see FilePSSE.java.  If we switch to JDBC rowmappers, uncomment this.
+    @Setter(AccessLevel.PRIVATE)
+    @Column(name="file_type", nullable = false)
+    private FileType fileType;
+     */
+
+    @Setter(AccessLevel.PRIVATE)
+    @Column(name="create_date", nullable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createDate;
 
     @Column(name="size")
     private Long size;
 
-    @JoinColumn(name = "added_by", nullable=false )
-    private String addedBy;
+    // relates to user.id, many to one.
+    @Setter(AccessLevel.PRIVATE)
+    @JoinColumn(name = "added_by", nullable=false )  // TODO: this should be a service that returns the active session user id.  -FRITZ
+    private Long addedBy;
+
+    // Minimal constructor
+    public File(String filename, String pathname, FileType fileType) {
+        this.filename = filename;
+        this.pathname = pathname;
+        this.addedBy = 1L;   // TODO: This should be a service call to get the user id from the session.  -FRITZ
+        this.createDate = new Date();
+
+        java.io.File f = new java.io.File(pathname + "/" + filename);
+        if(f.isFile())
+            this.size = f.length();
+    }
+
+    // DTO constructor to avoid duplication
+    public File(FileDto fileDto) {
+        this.filename    = fileDto.getFilename();
+        this.pathname    = fileDto.getPathname();
+        this.description = fileDto.getDescription();
+        this.addedBy     = fileDto.getAddedBy();
+        this.createDate  = fileDto.getCreateDate();
+        this.size        = fileDto.getSize();
+    }
+
+    // Methods for the subclasses
+    public abstract String getFileFormatVersion();  // Leave this as a string to deal with version inconsistencies between file formats, for now.
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("\nFile:").append("\n");
-        sb.append("    id          : ").append(id).append("\n");
-        sb.append("    name        : ").append(name).append("\n");
-        sb.append("    location    : ").append(location).append("\n");
-        sb.append("    description : ").append(description).append("\n");
-        sb.append("    transferDate: ").append(transferDate).append("\n");
-        sb.append("    size        : ").append(size).append("\n");
-        sb.append("    addedBy     : ").append(addedBy).append("\n");
-        return sb.toString();
+        return "File{" +
+                "filename='" + filename + '\'' +
+                ", pathname='" + pathname + '\'' +
+                ", description='" + description + '\'' +
+                ", createDate=" + createDate +
+                ", size=" + size +
+                ", addedBy=" + addedBy +
+                '}';
     }
 }

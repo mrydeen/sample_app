@@ -1,0 +1,5 @@
+/target
+/.idea
+/buildit.sh
+/runit.sh
+/*.iml

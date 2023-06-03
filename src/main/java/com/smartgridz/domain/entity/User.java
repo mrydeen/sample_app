@@ -1,6 +1,5 @@
 package com.smartgridz.domain.entity;
 
-import com.smartgridz.domain.entity.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,7 @@ import lombok.Setter;
 import java.util.Date;
 
 /**
- * This class represents a user of this application.  A User can have an @Role
+ * This class represents a user of this application.  A User can have a @Role
  */
 @Getter
 @Setter
@@ -26,11 +25,11 @@ public class User
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable=false)
+    private String login;
+
     @Column(name="username", nullable=false)
     private String userName;
-
-    @Column(nullable=false)
-    private String name;
 
     @Column(nullable=false, unique=true)
     private String email;
@@ -53,8 +52,9 @@ public class User
         StringBuffer sb = new StringBuffer();
         sb.append("\nUser:").append("\n");
         sb.append("    id:       ").append(id).append("\n");
-        sb.append("    username: ").append(id).append("\n");
-        sb.append("    name:     ").append(name).append("\n");
+        sb.append("    login:     ").append(login).append("\n");
+        sb.append("    username: ").append(userName).append("\n");
+
         sb.append("    email:    ").append(email).append("\n");
         sb.append("    password: ").append(password).append("\n");
         if ( role != null) {

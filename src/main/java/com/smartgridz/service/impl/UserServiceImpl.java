@@ -9,6 +9,7 @@ import com.smartgridz.dao.RoleDao;
 import com.smartgridz.dao.UserDao;
 import com.smartgridz.service.UserService;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,12 +18,12 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * This class implements services for the User.
  */
+@Transactional
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -75,15 +76,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private UserDao userDao;
-    private RoleDao roleDao;
+    private final UserDao userDao;
+    private final RoleDao roleDao;
 
     /**
      * This encoder comes from the SpringSecurity file.
      */
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    private ResetTokenWatchDog resetTokenWatchDog;
+    private final ResetTokenWatchDog resetTokenWatchDog;
 
     /**
      * When we first start up, we want to make sure that an administrator user
@@ -91,11 +92,11 @@ public class UserServiceImpl implements UserService {
      */
     @PostConstruct
     void checkForAdminUser() {
-        User admin = findUserByUserName("admin");
+        User admin = findUserByLogin("admin");
         if (admin == null) {
            admin = new User();
-           admin.setUserName("admin");
-           admin.setName("Administrator User");
+           admin.setLogin("admin");
+           admin.setUserName("Administrator User");
            admin.setPassword(passwordEncoder.encode("xyzzy"));
            admin.setEmail("admin@smartgridz.com");
 
@@ -120,8 +121,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(UserDto userDto) {
         User user = new User();
+        user.setLogin(userDto.getLogin());
         user.setUserName(userDto.getUserName());
-        user.setName(userDto.getFirstName() + " " + userDto.getLastName());
         user.setEmail(userDto.getEmail());
         // encrypt the password using spring security
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -137,9 +138,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(User user) {
-        userDao.delete(user);
-    }
+    public void deleteUser(User user) { userDao.delete(user); }
+
+    @Override
+    public void deleteUserByLogin(String login) { userDao.deleteByLogin(login); }
 
     @Override
     public User findUserByEmail(String email) {
@@ -147,9 +149,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByUserName(String userName) {
-        return userDao.findByUserName(userName);
+    public User findUserByLogin(String login) {
+        return userDao.findByLogin(login);
     }
+
+    @Override
+    public User findUserByUserName(String userName) { return userDao.findByUserName(userName); }
 
     @Override
     public User findByResetPasswordToken(String token) {
@@ -194,10 +199,8 @@ public class UserServiceImpl implements UserService {
 
     private UserDto mapToUserDto(User user){
         UserDto userDto = new UserDto();
-        String[] str = user.getName().split(" ");
         userDto.setUserName(user.getUserName());
-        userDto.setFirstName(str[0]);
-        userDto.setLastName(str[1]);
+        userDto.setLogin(user.getLogin());
         userDto.setEmail(user.getEmail());
         // TODO: Need to make this pretty.
         userDto.setRole(user.getRole().getType().name());

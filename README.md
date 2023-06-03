@@ -8,6 +8,9 @@ As mentioned, this application requires MySQL.  It will also need a mysql user s
 
     > username: spring
     > password: xyzzy
+   
+    > mysql> CREATE USER 'spring'@'localhost' IDENTIFIED BY 'xyzzy'
+    > mysql> GRANT ALL PRIVILEGES ON *.* TO 'spring'@'localhost' WITH GRANT OPTION;
 
 ## Building the application
 
