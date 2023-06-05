@@ -48,8 +48,8 @@ public abstract class File
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
-    @Column(name="size")
-    private Long size;
+    @Column(name="size_in_bytes")
+    private Long sizeInBytes;
 
     // relates to user.id, many to one.
     @Setter(AccessLevel.PRIVATE)
@@ -65,7 +65,7 @@ public abstract class File
 
         java.io.File f = new java.io.File(pathname + "/" + filename);
         if(f.isFile())
-            this.size = f.length();
+            this.sizeInBytes = f.length();
     }
 
     // DTO constructor to avoid duplication
@@ -75,7 +75,7 @@ public abstract class File
         this.description = fileDto.getDescription();
         this.addedBy     = fileDto.getAddedBy();
         this.createDate  = fileDto.getCreateDate();
-        this.size        = fileDto.getSize();
+        this.sizeInBytes = fileDto.getSizeInBytes();
     }
 
     // Methods for the subclasses
@@ -88,7 +88,7 @@ public abstract class File
                 ", pathname='" + pathname + '\'' +
                 ", description='" + description + '\'' +
                 ", createDate=" + createDate +
-                ", size=" + size +
+                ", sizeInBytes=" + sizeInBytes +
                 ", addedBy=" + addedBy +
                 '}';
     }

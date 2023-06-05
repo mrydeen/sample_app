@@ -28,7 +28,7 @@ public class FileDto {
     private Date createDate;
 
     //@NotEmpty
-    private Long size;
+    private Long sizeInBytes;
 
     //@NotEmpty
     private Long addedBy;
@@ -41,7 +41,7 @@ public class FileDto {
         this.pathname = fileDto.getPathname();
         this.addedBy = fileDto.getAddedBy();
         this.description = fileDto.getDescription();
-        this.size = fileDto.getSize();
+        this.sizeInBytes = fileDto.getSizeInBytes();
         this.fileFormatVersion = fileDto.getFileFormatVersion();
         this.createDate = fileDto.getCreateDate();
         this.fileType = fileDto.getFileType();
@@ -56,7 +56,7 @@ public class FileDto {
                 ", description='" + description + '\'' +
                 ", fileType=" + fileType +
                 ", createDate=" + createDate +
-                ", size=" + size +
+                ", size=" + sizeInBytes +
                 ", addedBy=" + addedBy +
                 ", fileFormatVersion='" + fileFormatVersion + '\'' +
                 '}';

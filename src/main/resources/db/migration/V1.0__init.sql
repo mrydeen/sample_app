@@ -33,7 +33,7 @@ CREATE TABLE smartgridz.files (
     `description` VARCHAR(1024),
     `file_type` VARCHAR(16) NOT NULL,
     `create_date` DATETIME,
-    `size` INT,
+    `size_in_bytes` INT,
     `added_by` BIGINT(20),
     `file_format_version` VARCHAR(64),
     PRIMARY KEY (`id`),
