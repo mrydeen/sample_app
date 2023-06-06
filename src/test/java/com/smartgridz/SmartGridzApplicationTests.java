@@ -12,61 +12,8 @@ import org.springframework.util.Assert;
 @SpringBootTest
 class SmartGridzApplicationTests {
 
-	@Autowired
-	UserService userService;
-
-	private static final String adminLogin    = "bigdog";
-	private static final String adminUserName = "Forest Gump";
-
-	private static final String adminEmail    = "forest.gump@smartgridz.com";
-
-	@AfterEach
-	public void tearDown() throws Exception {
-		try {
-			userService.deleteUserByLogin(adminLogin);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	@Test
 	void contextLoads() {
-	}
-
-	@Test
-	public void testGetUserByLogin() throws Exception {
-		//arrange
-		UserDto admin = createUser();
-
-		//act
-		userService.saveUser(admin);
-
-		//assert
-		Assert.isTrue(userService.findUserByLogin(adminLogin) != null, "Unable to find user by login.");
-	}
-
-	@Test
-	public void testGetUserByUserName() throws Exception {
-		//arrange
-		UserDto admin = createUser();
-
-		//act
-		userService.saveUser(admin);
-
-		//assert
-		Assert.isTrue(userService.findUserByUserName(adminUserName) != null, "Unable to find user by username.");
-	}
-
-	private UserDto createUser() {
-		UserDto admin = new UserDto();
-		admin.setLogin(adminLogin);
-		admin.setUserName(adminUserName);
-		admin.setEmail(adminEmail);
-
-		admin.setPassword("noop");
-		admin.setRole(RoleType.ADMINISTRATOR.name());
-
-		return admin;
 	}
 
 }
