@@ -106,7 +106,7 @@ public class FileServiceImpl implements FileService {
         fileDto.setPathname(file.getPathname());
         fileDto.setDescription(file.getDescription());
         fileDto.setCreateDate(file.getCreateDate());
-        fileDto.setSize(file.getSize());
+        fileDto.setSizeInBytes(file.getSizeInBytes());
         fileDto.setAddedBy(file.getAddedBy());
         fileDto.setFileFormatVersion(file.getFileFormatVersion());
 

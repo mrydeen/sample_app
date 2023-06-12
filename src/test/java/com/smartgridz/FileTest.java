@@ -37,7 +37,7 @@ public class FileTest {
         //assert
         Assert.isTrue("test desc".equals(fileDto.getDescription()), "Failed to set description");
         Assert.isTrue(fileDto.getFileFormatVersion().equals("33"), "Failed to set file format version");
-        Assert.isTrue(fileDto.getSize() > 0, "File size error");
+        Assert.isTrue(fileDto.getSizeInBytes() > 0, "File size error");
         Assert.isTrue(fileDto.getAddedBy() != null && fileDto.getAddedBy().equals(1L), "Failed to set user id");  // FIXME: this should be the session user.
     }
 
@@ -170,7 +170,7 @@ public class FileTest {
         dto.setPathname(pathname);
         dto.setFileType(FileType.PSSE_RAW);
         dto.setCreateDate(new Date());
-        dto.setSize(20L);
+        dto.setSizeInBytes(20L);
         dto.setAddedBy(1L);
         dto.setFileFormatVersion("33");
 

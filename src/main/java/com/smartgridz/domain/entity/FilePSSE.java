@@ -47,7 +47,7 @@ public class FilePSSE extends File {
                 ", fileType=" + "PSSE_RAW" +
                 ", fileFormatVersion='" + fileFormatVersion + '\'' +
                 ", createDate=" + super.getCreateDate() +
-                ", size=" + super.getSize() +
+                ", size=" + super.getSizeInBytes() +
                 ", addedBy=" + super.getAddedBy() +
                 '}';
     }

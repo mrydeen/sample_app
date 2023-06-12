@@ -40,8 +40,13 @@ public class FileController {
     }
 
     // Handler method to handle file add form submit request
+<<<<<<< HEAD
     @PostMapping("/add")
     public String saveFile(@Valid @ModelAttribute("user") FileDto fileDto,
+=======
+    @PostMapping("/files/add")
+    public String saveFile(@Valid @ModelAttribute("fileDto") FileDto fileDto,
+>>>>>>> 86ce603b91d98545619f3399fd3cbeb9c1862524
                                BindingResult result,
                                Model model){
 
@@ -57,7 +62,7 @@ public class FileController {
         fileDto.setPathname("/tmp");             // TODO: this needs to come from the file chooser.
         fileDto.setFileType(FileType.PSSE_RAW);  // TODO: This needs to be determined by scanning the file metadata.
         fileDto.setCreateDate(new Date());
-        fileDto.setSize(20L);                    // TODO: This needs to be determined from the physical file.
+        fileDto.setSizeInBytes(20L);                    // TODO: This needs to be determined from the physical file.
 
         Long userId = fileService.getUserId();
         fileDto.setAddedBy(userId!=null ? userId : 0L);
