@@ -14,15 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
 
 @Controller
+@RequestMapping("/files")
 public class FileController {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileController.class);
@@ -33,16 +31,23 @@ public class FileController {
         this.fileService = fileService;
     }
 
+    // handler method to handle list of files
+    @GetMapping()
+    public String files(Model model){
+        List<FileDto> files = fileService.findAllFiles();
+        model.addAttribute("files", files);
+        return "file/files";
+    }
 
     // Handler method to handle file add form submit request
-    @PostMapping("/files/add")
+    @PostMapping("/add")
     public String saveFile(@Valid @ModelAttribute("user") FileDto fileDto,
                                BindingResult result,
                                Model model){
 
         if(result.hasErrors()){
             model.addAttribute("filename", fileDto);
-            return "files_add";
+            return "file/files_add";
         }
 
         //
@@ -59,11 +64,11 @@ public class FileController {
         fileDto.setFileFormatVersion("33");      // TODO: This needs to be determined by scanning the file metadata.
 
         fileService.saveFile(fileDto);
-        return "redirect:/files_add?success";
+        return "redirect:/files/files_add?success";
     }
 
     // Handler method to delete a file from the system
-    @PostMapping("/files/delete")
+    @PostMapping("/delete")
     public String deleteFile(@RequestParam(name = "id") Long id, Model model){
         List<FileDto> existingFile = fileService.findById(id);
 
@@ -76,13 +81,6 @@ public class FileController {
         return "redirect:/files?delete_success";
     }
 
-    // handler method to handle list of files
-    @GetMapping("/files")
-    public String listFiles(Model model){
-        List<FileDto> files = fileService.findAllFiles();
-        model.addAttribute("files", files);
-        return "files";
-    }
 
     // handler for add form
     @GetMapping("/files_add")
@@ -91,7 +89,7 @@ public class FileController {
         FileDto file = new FileDto();
         model.addAttribute("file", file);
 
-        return "files_add";
+        return "file/files_add";
     }
 }
 

@@ -1,4 +1,4 @@
-package com.smartgridz.config;
+package com.smartgridz.config.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +19,9 @@ public class SpringSecurity {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    OurAccessDeniedHandler ourAccessDeniedHandler;
+
     /**
      * The password encoding we will be using for the product. This will be used in the
      * UserServiceImpl to encode the users passwords and be used below to configure
@@ -35,28 +38,29 @@ public class SpringSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/register/**").hasRole("ADMIN")
-                                .requestMatchers("/config_email/**").hasRole("ADMIN")
-                                .requestMatchers("/users").hasRole("ADMIN")
-                                .requestMatchers("/files/**").hasRole("ADMIN")
-                                .requestMatchers("/files_add").hasRole("ADMIN")
+                        authorize.requestMatchers("/images/**", "/js/**", "/css/**", "/favicon.ico").permitAll()
+                                .requestMatchers("/users/**").hasRole("ADMIN")
+                                .requestMatchers("/user/**").hasRole("ADMIN")
+                                .requestMatchers("/emailconfig/**").hasRole("ADMIN")
                                 .requestMatchers("/forgot_password/**").permitAll()
-                                .requestMatchers("/reset_password/**").permitAll()
-                                .requestMatchers("/message/**").permitAll()
+                                .requestMatchers("/forgotpassword/**").permitAll()
                                 .requestMatchers("/index").permitAll()
-                                .requestMatchers("/images/**").permitAll()
-
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/error").permitAll()
+                                .requestMatchers("/access_denied").permitAll()
+                                .requestMatchers("/**").authenticated()
+                                .and()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
-                                .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/users", true)
-                                .permitAll()
+                                .defaultSuccessUrl("/index", true)
+                                .and()
                 ).logout(
                         logout -> logout
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .logoutUrl("/logout")
+                                .invalidateHttpSession(true)
                                 .permitAll()
-                );
+                ).exceptionHandling().accessDeniedHandler(ourAccessDeniedHandler);
         return http.build();
     }
 

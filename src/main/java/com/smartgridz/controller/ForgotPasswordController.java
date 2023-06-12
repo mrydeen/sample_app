@@ -37,7 +37,8 @@ public class ForgotPasswordController {
      */
     @GetMapping("/forgot_password")
     public String showForgotPasswordForm() {
-        return "forgot_password";
+        LOG.error("HANDING BACK ---> forgot_password");
+        return "forgotpassword/forgot_password";
     }
 
     /**
@@ -59,19 +60,19 @@ public class ForgotPasswordController {
             User user = userService.findUserByUserName(userName);
 
             // We need to send them an email with link to the reset password form
-            String resetPasswordLink = getSiteUrl(request) + "/reset_password?token=" + token;
+            String resetPasswordLink = getSiteUrl(request) + "/forgotpassword/reset_password?token=" + token;
             emailService.sendResetPasswordMsg(user.getEmail(), resetPasswordLink);
 
         } catch (ResourceAccessException rae) {
-            return "redirect:/forgot_password?error";
+            return "redirect:/forgotpassword/forgot_password?error";
         } catch (Exception e) {
             LOG.error("Failed to process password update:", e);
-            return "redirect:/forgot_password?error";
+            return "redirect:/forgotpassword/forgot_password?error";
         }
 
         // Send the user back to the forgot_password.html which has the error
         // and success message processing.
-        return "redirect:/forgot_password?success";
+        return "redirect:/forgotpassword/forgot_password?success";
     }
 
     /**
@@ -98,7 +99,7 @@ public class ForgotPasswordController {
             // Send them to the message.html due to error
             return "message";
         }
-        return "reset_password";
+        return "forgotpassword/reset_password";
     }
 
     @PostMapping("/reset_password")
@@ -113,6 +114,6 @@ public class ForgotPasswordController {
         }
         userService.updatePassword(user, password);
 
-        return "redirect:/login?success_password_reset";
+        return "redirect:/auth/login?success_password_reset";
     }
 }
