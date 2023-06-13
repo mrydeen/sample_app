@@ -63,7 +63,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void saveFile(FileDto fileDtoIn) {
+    public File saveFile(FileDto fileDtoIn) {
 
         FileDto fileDto = new FileDto(fileDtoIn);
 
@@ -75,6 +75,8 @@ public class FileServiceImpl implements FileService {
 
         File f = fileDao.findByPathnameAndFilename(fileDto.getPathname(), fileDto.getFilename());
 
+
+
         // Filename already exists, find a new one, holes get filled in for better or worse.
         while(f != null && f.getFilename().length() > 0) {
             index++;
@@ -85,8 +87,7 @@ public class FileServiceImpl implements FileService {
             fileDto.setFilename(filename + "." + index);
         }
 
-        File file = new FilePSSE(fileDto);
-        fileDao.save(file);
+        return fileDao.save(new FilePSSE(fileDto));
     }
 
     @Override

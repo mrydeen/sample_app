@@ -1,6 +1,7 @@
 package com.smartgridz.service;
 
 import com.smartgridz.controller.dto.FileDto;
+import com.smartgridz.domain.entity.File;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface FileService {
 
     List<FileDto> findAllFiles();
 
-    void saveFile(FileDto file);
+    File saveFile(FileDto file);
 
     void deleteFileById(Long id);
 
