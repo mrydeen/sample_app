@@ -63,7 +63,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void saveFile(FileDto fileDtoIn) {
+    public File saveFile(FileDto fileDtoIn) {
 
         FileDto fileDto = new FileDto(fileDtoIn);
 
@@ -85,8 +85,7 @@ public class FileServiceImpl implements FileService {
             fileDto.setFilename(filename + "." + index);
         }
 
-        File file = new FilePSSE(fileDto);
-        fileDao.save(file);
+        return fileDao.save(new FilePSSE(fileDto));
     }
 
     @Override

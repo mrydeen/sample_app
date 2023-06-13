@@ -1,8 +1,10 @@
 package com.smartgridz.controller.dto;
 
 import com.smartgridz.domain.entity.FileType;
+import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -35,6 +37,9 @@ public class FileDto {
 
     //@NotEmpty
     private String fileFormatVersion;
+
+    //@NotEmpty
+    private MultipartFile file;
 
     public FileDto(FileDto fileDto) {
         this.filename = fileDto.getFilename();
