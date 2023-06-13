@@ -75,8 +75,6 @@ public class FileServiceImpl implements FileService {
 
         File f = fileDao.findByPathnameAndFilename(fileDto.getPathname(), fileDto.getFilename());
 
-
-
         // Filename already exists, find a new one, holes get filled in for better or worse.
         while(f != null && f.getFilename().length() > 0) {
             index++;

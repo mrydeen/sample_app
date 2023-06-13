@@ -106,8 +106,7 @@ public class FileController {
             LOG.error("Failure to save file to database: " + file.getOriginalFilename());
             return "redirect:/files_add?error";
         }
-
-        fileService.saveFile(fileDto);
+        
         return "redirect:/files/files_add?success";
 
     }
