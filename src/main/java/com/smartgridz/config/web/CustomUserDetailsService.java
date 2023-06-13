@@ -1,4 +1,4 @@
-package com.smartgridz.config;
+package com.smartgridz.config.web;
 
 import com.smartgridz.domain.entity.Role;
 import com.smartgridz.domain.entity.User;

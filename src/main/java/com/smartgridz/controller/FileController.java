@@ -8,22 +8,25 @@ import com.smartgridz.domain.entity.File;
 import com.smartgridz.domain.entity.FileType;
 import com.smartgridz.service.FileService;
 
-import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
+
 
 import java.util.Date;
 import java.util.List;
 
 @Controller
+@RequestMapping("/files")
 public class FileController {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileController.class);
@@ -36,9 +39,17 @@ public class FileController {
         this.systemOptionsService = systemOptionsService;
     }
 
+    // handler method to handle list of files
+    @GetMapping()
+    public String files(Model model){
+        List<FileDto> files = fileService.findAllFiles();
+        model.addAttribute("files", files);
+        return "file/files";
+    }
 
     // Handler method to handle file add form submit request
-    @PostMapping("/files/add")
+    @PostMapping("/add")
+
     public String saveFile(Model model, @RequestParam("file") MultipartFile file, @RequestParam("description") String description) {
 
         /*
@@ -47,6 +58,13 @@ public class FileController {
                 model.addAttribute("filename", file.getOriginalFilename());
             System.out.println("result has errors: " + fileBR);
             return "files_add";
+                               BindingResult result,
+                               Model model){
+
+        if(result.hasErrors()){
+            model.addAttribute("filename", fileDto);
+            return "file/files_add";
+
         }
         */
 
@@ -89,11 +107,13 @@ public class FileController {
             return "redirect:/files_add?error";
         }
 
-        return "redirect:/files_add?success";
+        fileService.saveFile(fileDto);
+        return "redirect:/files/files_add?success";
+
     }
 
     // Handler method to delete a file from the system
-    @PostMapping("/files/delete")
+    @PostMapping("/delete")
     public String deleteFile(@RequestParam(name = "id") Long id, Model model){
         List<FileDto> existingFile = fileService.findById(id);
 
@@ -117,13 +137,6 @@ public class FileController {
         return "redirect:/files?delete_success";
     }
 
-    // handler method to handle list of files
-    @GetMapping("/files")
-    public String listFiles(Model model){
-        List<FileDto> files = fileService.findAllFiles();
-        model.addAttribute("files", files);
-        return "files";
-    }
 
     // handler for add form
     @GetMapping("/files_add")
@@ -132,7 +145,7 @@ public class FileController {
         FileDto file = new FileDto();
         model.addAttribute("file", file);
 
-        return "files_add";
+        return "file/files_add";
     }
 }
 

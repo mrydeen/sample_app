@@ -33,7 +33,7 @@ public class EmailConfigController {
         // Create model object to store form data
         EmailSetupDto emailSetupDto = emailConfigService.getEmailSettings();
         model.addAttribute("email", emailSetupDto);
-        return "config_email";
+        return "emailconfig/config_email";
     }
 
     /**
@@ -57,6 +57,6 @@ public class EmailConfigController {
          */
 
         emailConfigService.updateEmailSettings(emailSetupDto);
-        return "redirect:/config_email?success";
+        return "redirect:/emailconfig/config_email?success";
     }
 }
