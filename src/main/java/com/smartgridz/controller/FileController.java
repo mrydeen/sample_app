@@ -40,15 +40,10 @@ public class FileController {
     }
 
     // Handler method to handle file add form submit request
-<<<<<<< HEAD
-    @PostMapping("/add")
-    public String saveFile(@Valid @ModelAttribute("user") FileDto fileDto,
-=======
     @PostMapping("/files/add")
     public String saveFile(@Valid @ModelAttribute("fileDto") FileDto fileDto,
->>>>>>> 86ce603b91d98545619f3399fd3cbeb9c1862524
-                               BindingResult result,
-                               Model model){
+                           BindingResult result,
+                           Model model){
 
         if(result.hasErrors()){
             model.addAttribute("filename", fileDto);

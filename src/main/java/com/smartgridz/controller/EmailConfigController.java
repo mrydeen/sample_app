@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class EmailConfigController {
@@ -57,6 +58,6 @@ public class EmailConfigController {
          */
 
         emailConfigService.updateEmailSettings(emailSetupDto);
-        return "redirect:/emailconfig/config_email?success";
+        return "redirect:/config_email?success";
     }
 }
