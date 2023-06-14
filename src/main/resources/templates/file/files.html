@@ -27,10 +27,9 @@
         <thead class="table-dark">
             <tr>
                 <th>Date</th>
-                <th>Filename</th>
-                <th>Pathname</th>
+                <th>File Name</th>
+                <th>Path Name</th>
                 <th>Size</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -38,7 +37,7 @@
                 <td th:text="${file.createDate}"></td>
                 <td th:text="${file.filename}"></td>
                 <td th:text="${file.pathname}"></td>
-                <td th:text="${file.size}"></td>
+                <td th:text="${file.sizeInBytes}"></td>
                 <td>
                     <form method="post" th:action="@{/files/delete}">
                         <input type="hidden" id="id" name="id" th:value="${file.id}" />

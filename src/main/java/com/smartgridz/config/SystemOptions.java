@@ -19,6 +19,7 @@ public class SystemOptions {
     public static Option EMAIL_PASSWORD = new Option("email.password");
     public static Option EMAIL_SMTP_AUTH = new Option("email.smtp.auth", "true");
     public static Option EMAIL_SMTP_STARTTLS_ENABLE = new Option("email.smtp.starttls.enable", "true");
+    public static Option FILE_REPOSITORY = new Option("file.repository.dir", "/tmp");
 
     /**
      * Add all of these options to the OPTION MAP for easy lookup.
@@ -30,6 +31,7 @@ public class SystemOptions {
         OPTION_MAP.put(EMAIL_PASSWORD.getOption(), EMAIL_PASSWORD);
         OPTION_MAP.put(EMAIL_SMTP_AUTH.getOption(), EMAIL_SMTP_AUTH);
         OPTION_MAP.put(EMAIL_SMTP_STARTTLS_ENABLE.getOption(), EMAIL_SMTP_STARTTLS_ENABLE);
+        OPTION_MAP.put(FILE_REPOSITORY.getOption(), FILE_REPOSITORY);
     }
 
     /**
