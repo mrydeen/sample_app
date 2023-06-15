@@ -8,4 +8,5 @@ public class SystemDefaults {
     public static final String CONFIG_PATH = INSTALL_PATH + "/config";
     public static final String CONFIG_FILE = CONFIG_PATH + "/config.properties";
     public static final String PRODUCT_UUID = CONFIG_PATH + "/uuid";
+    public static final String REPOSITORY_PATH = INSTALL_PATH + "/repository";
 }

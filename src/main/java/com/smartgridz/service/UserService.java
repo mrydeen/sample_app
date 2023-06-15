@@ -31,4 +31,6 @@ public interface UserService {
     User findByResetPasswordToken(String token);
 
     List<User> findAllUsersWithResetTokens();
+
+    Long getUserId();
 }

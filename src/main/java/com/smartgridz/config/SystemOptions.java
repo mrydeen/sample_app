@@ -19,7 +19,7 @@ public class SystemOptions {
     public static Option EMAIL_PASSWORD = new Option("email.password");
     public static Option EMAIL_SMTP_AUTH = new Option("email.smtp.auth", "true");
     public static Option EMAIL_SMTP_STARTTLS_ENABLE = new Option("email.smtp.starttls.enable", "true");
-    public static Option FILE_REPOSITORY = new Option("file.repository.dir", "/tmp");
+    public static Option FILE_REPOSITORY = new Option("file.repository.dir", SystemDefaults.REPOSITORY_PATH);
 
     /**
      * Add all of these options to the OPTION MAP for easy lookup.

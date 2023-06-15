@@ -44,11 +44,13 @@ public class FilePSSE extends File {
                 "filename='" + super.getFilename() + '\'' +
                 ", pathname='" + super.getPathname() + '\'' +
                 ", description='" + super.getDescription() + '\'' +
+                ", casename='" + super.getCasename() + '\'' +
                 ", fileType=" + "PSSE_RAW" +
                 ", fileFormatVersion='" + fileFormatVersion + '\'' +
                 ", createDate=" + super.getCreateDate() +
                 ", size=" + super.getSizeInBytes() +
                 ", addedBy=" + super.getAddedBy() +
+                ", valid=" + super.isValid() +
                 '}';
     }
 }
