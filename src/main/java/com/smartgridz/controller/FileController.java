@@ -56,8 +56,8 @@ public class FileController {
 
     // Handler method to handle file add form submit request
     @PostMapping("/add")
-    public String saveFile(@RequestParam("file") MultipartFile[] files, @RequestParam("description") String description, @RequestParam("casename") String casename, Model model) {
 
+    public String saveFile(@RequestParam("file") MultipartFile[] files, @RequestParam("description") String description, @RequestParam("casename") String casename, Model model) {
         String repository = systemOptionsService.getOption(SystemOptions.FILE_REPOSITORY);
         if(repository == null) {
             LOG.error("File repository directory is not defined.");

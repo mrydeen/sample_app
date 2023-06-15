@@ -14,7 +14,8 @@ import jakarta.servlet.http.HttpSession;
 
 @Component
 public class SessionTimerInterceptor implements HandlerInterceptor {
-    private static final long MAX_INACTIVE_SESSION_TIME = 12 * 10000;
+    // 10 Minute timeout session
+    private static final long MAX_INACTIVE_SESSION_TIME = 60 * 10000;
 
     private HttpSession session;
 
