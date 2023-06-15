@@ -4,11 +4,14 @@ package com.smartgridz.controller;
 import com.smartgridz.config.SystemOptions;
 import com.smartgridz.config.SystemOptionsService;
 import com.smartgridz.controller.dto.FileDto;
+import com.smartgridz.dao.FileDao;
 import com.smartgridz.domain.entity.File;
+import com.smartgridz.domain.entity.FilePSSE;
 import com.smartgridz.domain.entity.FileType;
+import com.smartgridz.domain.entity.User;
 import com.smartgridz.service.FileService;
 
-
+import com.smartgridz.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -34,44 +38,25 @@ public class FileController {
     private final FileService fileService;
     private final SystemOptionsService systemOptionsService;
 
-    public FileController(FileService fileService, SystemOptionsService systemOptionsService) {
+    private final UserService userService;
+
+    public FileController(FileService fileService, SystemOptionsService systemOptionsService, UserService userService) {
         this.fileService = fileService;
         this.systemOptionsService = systemOptionsService;
+        this.userService = userService;
     }
 
     // handler method to handle list of files
     @GetMapping()
     public String files(Model model){
-        List<FileDto> files = fileService.findAllFiles();
+        List<FileDto> files = fileService.findAllFilesAsDto();
         model.addAttribute("files", files);
         return "file/files";
     }
 
     // Handler method to handle file add form submit request
     @PostMapping("/add")
-
-    public String saveFile(Model model, @RequestParam("file") MultipartFile file, @RequestParam("description") String description) {
-
-        /*
-        if(fileBR.hasErrors()){
-            if(file.getOriginalFilename()!= null)
-                model.addAttribute("filename", file.getOriginalFilename());
-            System.out.println("result has errors: " + fileBR);
-            return "files_add";
-                               BindingResult result,
-                               Model model){
-
-        if(result.hasErrors()){
-            model.addAttribute("filename", fileDto);
-            return "file/files_add";
-
-        }
-        */
-
-
-        if(file.isEmpty()) {
-            return "redirect:/files_add?error";
-        }
+    public String saveFile(@RequestParam("file") MultipartFile[] files, @RequestParam("description") String description, @RequestParam("casename") String casename, Model model) {
 
         String repository = systemOptionsService.getOption(SystemOptions.FILE_REPOSITORY);
         if(repository == null) {
@@ -79,36 +64,56 @@ public class FileController {
             return "redirect:/files_add?error";
         }
 
-        FileDto fileDto = new FileDto();
-        fileDto.setFilename(file.getOriginalFilename());
-        fileDto.setPathname(repository);
-        fileDto.setFileType(FileType.PSSE_RAW);  // TODO: This needs to be determined by scanning the file metadata. (fill in later if we can).
-        fileDto.setCreateDate(new Date());
-        fileDto.setSizeInBytes(file.getSize());
-        fileDto.setDescription(description);
+        // If there is a case name, create a directory for the file(s).
+        if(casename != null) {
+            java.io.File f = new java.io.File(repository + "/" + casename);
+            if (!f.isDirectory()) {
+                f.mkdir();
+            }
+        }
 
-        Long userId = fileService.getUserId();
-        fileDto.setAddedBy(userId!=null ? userId : 0L);
-        fileDto.setFileFormatVersion("33");      // TODO: This needs to be determined by scanning the file metadata. (only versions after 33 have a version, maybe drop this).
-
-        File savedFile = fileService.saveFile(fileDto);
-        if(savedFile != null) {
-            // Save the file to the file repository and then record a reference in the database.
-            try {
-                file.transferTo(new java.io.File(repository + "/" + savedFile.getFilename()));
-            } catch(Exception e) {
-                LOG.error("Unable to persist file to disk: " + repository + "/" + savedFile.getFilename());
-                e.printStackTrace();
+        // Loop through the set of files and add/upload.
+        for(MultipartFile file: files) {
+            if (file.isEmpty()) {
                 return "redirect:/files_add?error";
             }
-        } else {
-            // Something happened when trying to record the database record
-            LOG.error("Failure to save file to database: " + file.getOriginalFilename());
-            return "redirect:/files_add?error";
-        }
-        
-        return "redirect:/files/files_add?success";
 
+            FileDto fileDto = new FileDto();
+            fileDto.setFilename(file.getOriginalFilename());
+            if(casename != null) {
+                fileDto.setPathname(repository + "/" + casename);
+            } else {
+                fileDto.setPathname(repository);
+            }
+            fileDto.setFileType(FileType.PSSE_RAW);  // TODO: This needs to be determined by scanning the file metadata. (fill in later if we can).
+            fileDto.setCreateDate(new Date());
+            fileDto.setSizeInBytes(file.getSize());
+            fileDto.setDescription(description);
+            fileDto.setCasename(casename);
+            fileDto.setValid(true);
+
+            Long userId = userService.getUserId();
+            fileDto.setAddedBy(userId != null ? userId : 0L);
+            fileDto.setFileFormatVersion("33");      // TODO: This needs to be determined by scanning the file metadata. (only versions after 33 have a version, maybe drop this).
+
+            // Files don't overwrite, the filename be altered with an index i.e., foobar.txt.1 if foobar.txt exists.
+            File savedFile = fileService.saveFile(fileDto);
+            if (savedFile != null) {
+                // Save the file to the file repository and then record a reference in the database.
+                try {
+                    file.transferTo(new java.io.File(fileDto.getPathname() + "/" + savedFile.getFilename()));
+                } catch (Exception e) {
+                    LOG.error("Unable to persist file to disk: " + fileDto.getPathname() + "/" + savedFile.getFilename());
+                    e.printStackTrace();
+                    return "redirect:/files_add?error";
+                }
+            } else {
+                // Something happened when trying to record the database record
+                LOG.error("Failure to save file to database: " + file.getOriginalFilename());
+                return "redirect:/files_add?error";
+            }
+        }
+        return "redirect:/files/files_add?success";
     }
 
     // Handler method to delete a file from the system

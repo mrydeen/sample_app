@@ -12,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
@@ -205,5 +206,22 @@ public class UserServiceImpl implements UserService {
         // TODO: Need to make this pretty.
         userDto.setRole(user.getRole().getType().name());
         return userDto;
+    }
+
+    /**
+     * Get the authenticated login name then look up the name to get the ID.
+     * @return ID of the login user
+     */
+    @Override
+    public Long getUserId() {
+
+        // Tests don't have this context
+        if(SecurityContextHolder.getContext().getAuthentication() != null) {
+            User user = findUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+            if(user != null) {
+                return user.getId();
+            }
+        }
+        return null;
     }
 }

@@ -18,16 +18,16 @@
   <div class="row col-md-8 offset-md-2">
     <div class="card">
       <div class="card-header">
-          <h2 class="text-center">Add File</h2>
+          <h2 class="text-center">Upload File</h2>
       </div>
       <div th:if="${param.success}">
           <div class="alert alert-info">
-            You have successfully added a file!
+            You have successfully uploaded one or more files!
           </div>
       </div>
       <div th:if="${param.error}">
         <div class="alert alert-info">
-          There was an error saving the file.  Check the logs for additional information.
+          There was an error saving the file(s).  Check the logs for additional information.
         </div>
       </div>
       <div class="card-body">
@@ -38,48 +38,60 @@
             th:object="${file}"
             enctype="multipart/form-data"
           >
-            <div class="form-group mb-3">
-              <label class="form-label">Choose File</label>
-              <!-- accept may need to be updated based on the way this is used, base raw file + .csv -->
-              <input
-                      class="form-control-file"
-                      id="file"
-                      name="file"
-                      placeholder="filename to load/parse/save"
-                      type="file"
-                      accept=".csv,.nrf,.psse,.raw,.txt"
-                      required
-                      autofocus
-                      multiple
-              />
-              <pre id="file-content"></pre>
+              <div class="form-group mb-3">
+                  <label class="form-label">Case</label>
+                  <input
+                          class="form-control"
+                          id="casename"
+                          name="casename"
+                          placeholder="Case Name"
+                          th:field="*{casename}"
+                          type="text"
+                          autofocus
+                  />
+                  <p th:errors = "*{casename}" class="text-danger"
+                     th:if="${#fields.hasErrors('casename')}"></p>
+              </div>
+              <div class="form-group mb-3">
+                  <label class="form-label">Choose File</label>
+                  <!-- accept may need to be updated based on the way this is used, base raw file + .csv -->
+                  <input
+                          class="form-control-file"
+                          id="file"
+                          name="file"
+                          placeholder="filename to load/parse/save"
+                          type="file"
+                          required
+                          autofocus
+                          multiple
+                  />
+                  <pre id="file-content"></pre>
 
-              <p th:errors = "*{file}" class="text-danger"
-                 th:if="${#fields.hasErrors('file')}"></p>
-            </div>
-
-
-            <div class="form-group mb-3">
-              <label class="form-label">Description</label>
-              <input
-                      class="form-control"
-                      id="description"
-                      name="description"
-                      placeholder="Description"
-                      th:field="*{description}"
-                      type="text"
-                      autofocus
-              />
-
-              <p th:errors = "*{description}" class="text-danger"
-                 th:if="${#fields.hasErrors('description')}"></p>
-            </div>
+                  <p th:errors = "*{file}" class="text-danger"
+                     th:if="${#fields.hasErrors('file')}"></p>
+              </div>
 
 
-            <div class="form-group" style="text-align: center">
-              <button class="btn btn-primary" type="submit">Save</button>
-            </div>
+              <div class="form-group mb-3">
+                  <label class="form-label">Description</label>
+                  <input
+                          class="form-control"
+                          id="description"
+                          name="description"
+                          placeholder="Description"
+                          th:field="*{description}"
+                          type="text"
+                          autofocus
+                  />
 
+                  <p th:errors = "*{description}" class="text-danger"
+                     th:if="${#fields.hasErrors('description')}"></p>
+              </div>
+
+
+              <div class="form-group" style="text-align: center">
+                  <button class="btn btn-primary" type="submit">Save</button>
+              </div>
           </form>
       </div>
     </div>
