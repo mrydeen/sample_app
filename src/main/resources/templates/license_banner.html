@@ -7,7 +7,7 @@
 <body>
     <div th:fragment="license_banner" class="alert alert-danger text-center">
       <span>
-        <p style="display:inline">You are using an unlicensed product, you have 24 days left. </p><a href="http://smartgridz.com">Select here to purchase a license</a>
+        <p style="display:inline" th:text="'You are using an unlicensed product, you have ' + ${license_num_days_left} + ' days left. '"></p><a href="http://smartgridz.com">Select here to purchase a license</a>
       </span>
     </div>
 </body>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
     <meta charset="UTF-8">
@@ -30,7 +31,7 @@
                 <th>User Name</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Action</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -39,10 +40,14 @@
                 <td th:text="${user.userName}"></td>
                 <td th:text="${user.email}"></td>
                 <td th:text="${user.role}"></td>
-                <td>
-                    <form method="post" th:action="@{/users/register/delete}">
-                        <input type="hidden" id="username" name="username" th:value="${user.userName}" />
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                <td class="text-center">
+                    <form style="display:inline-block" sec:authorize="hasRole('ADMIN')" method="post" th:action="@{/users/register/delete}">
+                        <input type="hidden" id="editUserName" name="username" th:value="${user.userName}" />
+                        <button type="submit" class="btn"><img th:src="@{images/editButton.png}" alt="Edit User" style="width:20px;height:20px"></button>
+                    </form>
+                    <form style="display:inline-block" sec:authorize="hasRole('ADMIN')" method="post" th:action="@{/users/register/delete}">
+                        <input type="hidden" id="deleteUserName" name="username" th:value="${user.userName}" />
+                        <button type="submit" class="btn"><img th:src="@{images/trashCanButton.png}" alt="Delete User" style="width:20px;height:25px"></button>
                     </form>
                 </td>
             </tr>

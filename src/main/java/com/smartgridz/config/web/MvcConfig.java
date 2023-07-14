@@ -8,9 +8,24 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
+    private UserInterceptor userInterceptor;
+
+    private SessionTimerInterceptor sessionTimerInterceptor;
+
+    private LicenseInterceptor licenseInterceptor;
+
+    public MvcConfig(UserInterceptor userInterceptor,
+                     SessionTimerInterceptor sessionTimerInterceptor,
+                     LicenseInterceptor licenseInterceptor ) {
+        this.userInterceptor = userInterceptor;
+        this.sessionTimerInterceptor = sessionTimerInterceptor;
+        this.licenseInterceptor = licenseInterceptor;
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new UserInterceptor());
-        registry.addInterceptor(new SessionTimerInterceptor());
+        registry.addInterceptor(userInterceptor);
+        registry.addInterceptor(sessionTimerInterceptor);
+        registry.addInterceptor(licenseInterceptor);
     }
 }

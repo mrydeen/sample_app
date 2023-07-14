@@ -50,6 +50,11 @@
         </div>
     </div>
 </nav>
+<th:block th:if="${license_is_valid == 'false' or license_num_days_left &lt; 60}" >
+    <div th:replace="license_banner :: license_banner">
+        Static text
+    </div>
+</th:block>
 </div>
 </body>
 </html>
