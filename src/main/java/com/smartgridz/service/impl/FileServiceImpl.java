@@ -1,17 +1,16 @@
 package com.smartgridz.service.impl;
 
+import com.smartgridz.config.SystemOptionsService;
 import com.smartgridz.controller.dto.FileDto;
 import com.smartgridz.dao.FileDao;
 import com.smartgridz.domain.entity.File;
 import com.smartgridz.domain.entity.FilePSSE;
 import com.smartgridz.domain.entity.FileType;
-import com.smartgridz.domain.entity.User;
 import com.smartgridz.service.FileService;
 import com.smartgridz.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +22,10 @@ public class FileServiceImpl implements FileService {
     private static final Logger LOG = LoggerFactory.getLogger(FileServiceImpl.class);
 
     @Autowired
-    UserService userService;
+    private SystemOptionsService systemOptionsService;
+
+    @Autowired
+    private UserService userService;
 
     private final FileDao fileDao;
 
@@ -44,6 +46,13 @@ public class FileServiceImpl implements FileService {
 
         return (file != null) ? mapToFileDto(file) : null;
     }
+    @Override
+    public File findByPathnameAndFilename(String pathname, String filename) {
+
+        return fileDao.findByPathnameAndFilename(pathname, filename);
+
+    }
+
 
     @Override
     public List<FileDto> findById(Long id) {
@@ -54,12 +63,25 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileDto> findAllFiles() {
+    public List<FileDto> findAllFilesAsDto() {
         List<File> files = fileDao.findAll();
 
         return files.stream()
                     .map((file) -> mapToFileDto(file))
                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public void update(FileDto fileDto) {
+        // TODO: make sure the record exists before saving?
+        Optional<File> files = fileDao.findById(fileDto.getId());
+        List<File> x = files.stream().toList();
+        File f = x.get(0);
+
+        // Need to merge attributes or similar TODO
+        f.setValid(fileDto.isValid());
+
+        fileDao.save(f);
     }
 
     @Override
@@ -98,6 +120,11 @@ public class FileServiceImpl implements FileService {
         fileDao.deleteAll();
     }
 
+    @Override
+    public void deleteByPathnameAndFilename(String pathname, String filename) {
+        fileDao.deleteByPathnameAndFilename(pathname, filename);
+    }
+
     private FileDto mapToFileDto(File file) {
         FileDto fileDto = new FileDto();
         fileDto.setId(file.getId());
@@ -117,21 +144,5 @@ public class FileServiceImpl implements FileService {
         return fileDto;
     }
 
-    /**
-     * Get the authenticated login name then look up the name to get the ID.
-     * @param login
-     * @return ID of the login user
-     */
-    @Override
-    public Long getUserId() {
 
-        // Tests don't have this context
-        if(SecurityContextHolder.getContext().getAuthentication() != null) {
-            User user = userService.findUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
-            if(user != null) {
-                return user.getId();
-            }
-        }
-        return null;
-    }
 }

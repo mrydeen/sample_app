@@ -35,6 +35,9 @@ public abstract class File
     @Column(name="description")
     private String description;
 
+    @Column(name="casename")
+    private String casename;
+
     /**
      * JPA needs a discriminator to identify the subclass, in this case file_type.  file_type is autofilled by JPA,
      * see FilePSSE.java.  If we switch to JDBC rowmappers, uncomment this.
@@ -56,11 +59,14 @@ public abstract class File
     @JoinColumn(name = "added_by", nullable=false )  // TODO: this should be a service that returns the active session user id.  -FRITZ
     private Long addedBy;
 
+    @Column(name = "valid")
+    private boolean valid;
+
     // Minimal constructor
     public File(String filename, String pathname, FileType fileType) {
         this.filename = filename;
         this.pathname = pathname;
-        this.addedBy = 1L;   // TODO: This should be a service call to get the user id from the session.  -FRITZ
+        this.addedBy = 1L;   // FIXME: TODO: This should be a service call to get the user id from the session.  -FRITZ
         this.createDate = new Date();
 
         java.io.File f = new java.io.File(pathname + "/" + filename);
@@ -73,9 +79,11 @@ public abstract class File
         this.filename    = fileDto.getFilename();
         this.pathname    = fileDto.getPathname();
         this.description = fileDto.getDescription();
+        this.casename    = fileDto.getCasename();
         this.addedBy     = fileDto.getAddedBy();
         this.createDate  = fileDto.getCreateDate();
         this.sizeInBytes = fileDto.getSizeInBytes();
+        this.valid       = fileDto.isValid();
     }
 
     // Methods for the subclasses
@@ -84,9 +92,11 @@ public abstract class File
     @Override
     public String toString() {
         return "File{" +
-                "filename='" + filename + '\'' +
+                "id=" + id +
+                ", filename='" + filename + '\'' +
                 ", pathname='" + pathname + '\'' +
                 ", description='" + description + '\'' +
+                ", casename='" + casename + '\'' +
                 ", createDate=" + createDate +
                 ", sizeInBytes=" + sizeInBytes +
                 ", addedBy=" + addedBy +

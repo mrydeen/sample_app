@@ -1,6 +1,7 @@
 package com.smartgridz;
 
 import com.smartgridz.controller.dto.FileDto;
+import com.smartgridz.domain.entity.File;
 import com.smartgridz.domain.entity.FileType;
 import com.smartgridz.service.FileService;
 import org.junit.jupiter.api.AfterEach;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Assert;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class FileTest {
         //arrange
         FileDto fileDto = createTestFile();
 
+        //act
         fileDto.setDescription("test desc");
 
         //assert
@@ -48,7 +51,7 @@ public class FileTest {
 
         //act
         fileService.saveFile(fileDto);
-        List<FileDto> files = fileService.findAllFiles();
+        List<FileDto> files = fileService.findAllFilesAsDto();
 
         //assert
         Assert.isTrue(files.size() > 0, " unable to add file record.");
@@ -98,7 +101,7 @@ public class FileTest {
 
         //act
         fileService.saveFile(fileDto);
-        List<FileDto> files = fileService.findAllFiles();
+        List<FileDto> files = fileService.findAllFilesAsDto();
 
         //assert
         Assert.isTrue(fileService.findById(files.get(0).getId()).size() > 0, " unable to retrieve record by ID.");
@@ -127,7 +130,7 @@ public class FileTest {
         //act
         fileService.saveFile(fileDto);
         //assert
-        Assert.isTrue(fileService.findAllFiles().size() > 0, "Failed to find files in DB.");
+        Assert.isTrue(fileService.findAllFilesAsDto().size() > 0, "Failed to find files in DB.");
     }
 
     @Test
@@ -139,7 +142,7 @@ public class FileTest {
 
         //act
         fileService.saveFile(fileDto);
-        List<FileDto> files = fileService.findAllFiles();
+        List<FileDto> files = fileService.findAllFilesAsDto();
 
         System.out.println(files.get(0));
 
@@ -158,7 +161,29 @@ public class FileTest {
         fileService.deleteAllFiles();
 
         //assert
-        Assert.isTrue(fileService.findAllFiles().size() == 0, "Failed to delete files in DB.");
+        Assert.isTrue(fileService.findAllFilesAsDto().size() == 0, "Failed to delete files in DB.");
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        //arrange
+        FileDto fileDto = createTestFile();
+        File tmp = fileService.saveFile(fileDto);
+        java.io.File f = new java.io.File(fileDto.getPathname() + "/" + fileDto.getFilename());
+        if(f.exists()) {
+            f.delete();
+        }
+
+        //act
+        System.out.println("ID=" + tmp.getId());
+        System.out.println("ID=" + fileDto.getId());
+        fileDto.setId(tmp.getId());
+        fileDto.setValid(false);
+        fileService.update(fileDto);
+
+        List<FileDto> files = fileService.findById(tmp.getId());
+        //assert
+        Assert.isTrue(!files.get(0).isValid(), "Valid not updated.");
     }
 
     private FileDto createTestFile() {

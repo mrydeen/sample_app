@@ -51,6 +51,7 @@ public class SpringSecurity {
                                 .requestMatchers("/login").permitAll()
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/access_denied").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
                                 .requestMatchers("/**").authenticated()
                                 .and()
                 ).formLogin(

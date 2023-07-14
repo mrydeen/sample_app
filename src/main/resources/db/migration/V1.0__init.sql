@@ -31,13 +31,15 @@ CREATE TABLE smartgridz.files (
     `filename` VARCHAR(128) NOT NULL,
     `pathname` VARCHAR(512) NOT NULL,
     `description` VARCHAR(1024),
+    `casename` VARCHAR(64),
     `file_type` VARCHAR(16) NOT NULL,
     `create_date` DATETIME,
     `size_in_bytes` INT,
     `added_by` BIGINT(20),
     `file_format_version` VARCHAR(64),
+    `valid` BOOLEAN default TRUE,
+    UNIQUE (pathname,filename),
     PRIMARY KEY (`id`),
-    UNIQUE(filename),
     FOREIGN KEY (added_by) REFERENCES users(id)
 ) ENGINE=INNODB;
 

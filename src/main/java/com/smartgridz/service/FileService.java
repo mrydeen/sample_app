@@ -8,10 +8,13 @@ import java.util.List;
 public interface FileService {
 
     FileDto findByCanonicalFilename(String filename);
+    File findByPathnameAndFilename(String pathname, String filename);
 
     List<FileDto> findById(Long id);
 
-    List<FileDto> findAllFiles();
+    List<FileDto> findAllFilesAsDto();
+
+    void update(FileDto fileDto);
 
     File saveFile(FileDto file);
 
@@ -19,5 +22,5 @@ public interface FileService {
 
     void deleteAllFiles();
 
-    Long getUserId();
+    void deleteByPathnameAndFilename(String pathname, String filename);
 }
